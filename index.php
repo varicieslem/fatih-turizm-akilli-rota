@@ -40,11 +40,26 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        var map = L.map('harita').setView([41.015, 28.965], 14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 19
-        }).addTo(map);
+       // 1. Fatih'in görünmez duvarlarını (Sınır Kutusu) tanımlıyoruz
+    var fatihSinirlari = [
+        [40.988, 28.913], // Güneybatı Köşesi
+        [41.030, 28.986]  // Kuzeydoğu Köşesi
+    ];
+
+    // 2. Haritayı bu sınırlara göre ve daha yakından (zoom: 15) başlatıyoruz
+    var map = L.map('harita', {
+        center: [41.015, 28.965],
+        zoom: 15,          // Başlangıç yakınlığı (eskiden 14'tü, şimdi daha detaylı)
+        minZoom: 14,       // Kullanıcının fareyle çok uzaklaşıp İstanbul'u görmesini engeller
+        maxBounds: fatihSinirlari, // Haritayı Fatih dışına kaydırmayı yasaklar
+        maxBoundsViscosity: 1.0    // Duvara çarpma efekti (Kullanıcı haritayı dışarı çekemez)
+    });
+
+    // 3. Harita Çizimleri (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
 
         var isaretciler = L.layerGroup().addTo(map);
 
